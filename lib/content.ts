@@ -2,21 +2,21 @@ import type { Course, Question } from './types';
 
 const Q = (
   id: string, skill: string, d: 1 | 2 | 3 | 4 | 5,
-  q: string, options: [string, string, string, string], correct: 0 | 1 | 2 | 3, explain: string,
-): Question => ({ id, skill, d, q, options, correct, explain });
+  q: string, options: [string, string, string, string], correct: 0 | 1 | 2 | 3, explain: string, hint?: string,
+): Question => ({ id, skill, d, q, options, correct, explain, hint });
 
 const QUESTION_LIST: Question[] = [
   // ---- Web Basics (10) ----
-  Q('W1', 'HTML', 1, 'Which tag shows the largest default heading?', ['<h6>', '<h1>', '<head>', '<big>'], 1, '<h1> is the top-level heading.'),
-  Q('W2', 'HTML', 2, 'Attribute for unique element identification?', ['class', 'id', 'name', 'key'], 1, 'id must be unique per page.'),
-  Q('W3', 'CSS', 1, 'CSS rule to color text red?', ['text-color: red;', 'color: red;', 'font-color: red;', 'paint: red;'], 1, 'The property is simply `color`.'),
-  Q('W4', 'CSS', 3, 'Which makes a flex container wrap items?', ['flex-flow: nowrap;', 'flex-wrap: wrap;', 'wrap: true;', 'display: grid;'], 1, 'flex-wrap allows multi-line layouts.'),
-  Q('W5', 'HTTP', 2, 'Status code for successful POST creation?', ['200', '201', '204', '302'], 1, '201 Created is returned when a resource is created.'),
-  Q('W6', 'HTTP', 3, 'Which header controls browser caching duration?', ['ETag', 'Cache-Control', 'Cookie', 'Referer'], 1, 'Cache-Control: max-age=… governs freshness.'),
-  Q('W7', 'Accessibility', 3, 'Best way to label an icon-only button?', ['title attribute', 'aria-label', 'placeholder', 'alt on div'], 1, 'aria-label gives an accessible name.'),
-  Q('W8', 'Web Security', 4, 'Escaping user input primarily prevents…', ['SQL injection & XSS', 'slow loads', 'CORS errors', 'memory leaks'], 0, 'Output encoding neutralizes injected markup/queries.'),
-  Q('W9', 'HTML', 2, 'Semantic element for standalone blog post?', ['<section>', '<article>', '<aside>', '<div>'], 1, '<article> = independently distributable content.'),
-  Q('W10', 'CSS', 4, 'Specificity order (low→high)?', ['element < class < id < inline', 'id < class < element < inline', 'inline < id < class < element', 'class < element < inline < id'], 0, 'Inline styles beat ids beat classes beat elements.'),
+  Q('W1', 'HTML', 1, 'Which tag shows the largest default heading?', ['<h6>', '<h1>', '<head>', '<big>'], 1, '<h1> is the top-level heading.', 'Think about heading hierarchy — 1 through 6.'),
+  Q('W2', 'HTML', 2, 'Attribute for unique element identification?', ['class', 'id', 'name', 'key'], 1, 'id must be unique per page.', 'Think "identity" — what makes something uniquely identifiable?'),
+  Q('W3', 'CSS', 1, 'CSS rule to color text red?', ['text-color: red;', 'color: red;', 'font-color: red;', 'paint: red;'], 1, 'The property is simply `color`.', 'Try the simplest CSS property name you can think of.'),
+  Q('W4', 'CSS', 3, 'Which makes a flex container wrap items?', ['flex-flow: nowrap;', 'flex-wrap: wrap;', 'wrap: true;', 'display: grid;'], 1, 'flex-wrap allows multi-line layouts.', 'The property name contains "wrap" — find it.'),
+  Q('W5', 'HTTP', 2, 'Status code for successful POST creation?', ['200', '201', '204', '302'], 1, '201 Created is returned when a resource is created.', 'HTTP has a specific "Created" code.'),
+  Q('W6', 'HTTP', 3, 'Which header controls browser caching duration?', ['ETag', 'Cache-Control', 'Cookie', 'Referer'], 1, 'Cache-Control: max-age=… governs freshness.', 'The header name literally says "cache".'),
+  Q('W7', 'Accessibility', 3, 'Best way to label an icon-only button?', ['title attribute', 'aria-label', 'placeholder', 'alt on div'], 1, 'aria-label gives an accessible name.', 'ARIA attributes are specifically for accessibility.'),
+  Q('W8', 'Web Security', 4, 'Escaping user input primarily prevents…', ['SQL injection & XSS', 'slow loads', 'CORS errors', 'memory leaks'], 0, 'Output encoding neutralizes injected markup/queries.', 'Think about what happens when untrusted HTML reaches the browser.'),
+  Q('W9', 'HTML', 2, 'Semantic element for standalone blog post?', ['<section>', '<article>', '<aside>', '<div>'], 1, '<article> = independently distributable content.', 'An element for content that could stand alone.'),
+  Q('W10', 'CSS', 4, 'Specificity order (low→high)?', ['element < class < id < inline', 'id < class < element < inline', 'inline < id < class < element', 'class < element < inline < id'], 0, 'Inline styles beat ids beat classes beat elements.', 'The most specific selector wins — what is the most specific?'),
 
   // ---- JavaScript (10) ----
   Q('J1', 'JS Basics', 1, 'Declare a block-scoped constant?', ['var x', 'let x', 'const x', 'static x'], 2, 'const = block scope + no reassignment.'),
@@ -91,4 +91,46 @@ export const QUESTIONS: Record<string, Question> = Object.fromEntries(
   QUESTION_LIST.map((q) => [q.id, q]),
 );
 
+
+
+// ---- hints for JS (84) ----
+// These are appended to the existing questions by patching their hint fields at load time
+const HINTS: Record<string, string> = {
+  J1: 'Which keyword prevents reassignment?',
+  J2: 'What does .map() return — the same array or a new one?',
+  J3: 'Arrow functions capture something special from their surrounding scope.',
+  J4: 'Other code keeps running while an async function yields.',
+  J5: 'freeze() only works one level deep.',
+  J6: 'Can you attach multiple handlers with the property syntax?',
+  J7: 'Are imports copies or references to the original?',
+  J8: 'Which block runs regardless of try/catch outcome?',
+  J9: 'all rejects immediately; allSettled is more tolerant.',
+  J10: 'Microtasks flush before the next macrotask or render.',
+  P1: 'Think hash symbol.',
+  P2: 'Which structure uses hashing for O(1) membership?',
+  P3: 'No self or cls is passed — just a plain function.',
+  P4: 'Python uses an algorithm to linearize base classes.',
+  P5: 'A trailing comma does something important here.',
+  P6: 'Values are produced on demand — lazy evaluation.',
+  P7: 'Use a tuple to catch multiple exception types.',
+  P8: 'It counts hashable items and has a most_common() method.',
+  P9: 'gather preserves the order of results.',
+  P10: 'CPython caches small integers between -5 and 256.',
+  D1: 'An extreme outlier drags the mean.',
+  D2: 'For large n, the sampling distribution of means becomes bell-shaped.',
+  D3: 'Use .loc for labels, .iloc for positions.',
+  D4: 'Training accuracy is great but test accuracy is poor.',
+  D5: 'L1 penalty drives some weights to exactly zero.',
+  D6: 'Bins reveal the shape of a distribution.',
+  D7: 'When p < alpha, we reject the null hypothesis.',
+  D8: 'Split-apply-combine: group, aggregate, merge back.',
+  D9: 'Held-out data gives an honest generalization estimate.',
+  D10: 'A lurking variable flips the aggregated trend.',
+};
+
+// patch hints into existing questions at module level
+for (const [id, hint] of Object.entries(HINTS)) {
+  const q = QUESTION_LIST.find((x) => x.id === id);
+  if (q) q.hint = hint;
+}
 
